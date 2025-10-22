@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2 面トランプ作成サイト</title>
+  <style>
+    :root {
+      --b4-w: 257mm; /* B4 幅 */
+      --b4-h: 364mm; /* B4 高さ */
+      --gap: 8mm;    /* 画像の間隔（印刷用）*/
+    }
+
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      color: #111;
+      background: #f6f7f9;
+    }
+
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 10px 12px;
+      display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    }
+    header h1 { font-size: 16px; margin: 0 8px 0 0; font-weight: 700; }
+
+    .btn {
+      appearance: none; border: 1px solid #d1d5db; background: #fff;
+      padding: 8px 12px; border-radius: 10px; cursor: pointer;
+      font-size: 14px; line-height: 1; transition: transform .02s ease, box-shadow .15s ease;
+      box-shadow: 0 1px 1px rgba(0,0,0,.06);
+    }
+    .btn:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary { background: #111827; color: #fff; border-color: #111827; }
+
+    .container { max-width: 1000px; margin: 18px auto; padding: 0 14px 48px; }
+
+    .preview-wrap {
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 14px;
+      padding: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.04);
+    }
+    .preview-note { color: #6b7280; font-size: 12px; margin: 0 0 10px; }
+
+    /* 画面プレビュー用：B4を縮小表示（等比） */
+    .sheet {
+      width: min(90vw, 900px);
+      aspect-ratio: calc(257/364);
+      border: 1px dashed #d1d5db;
+      margin: 0 auto; background: #fafafa; position: relative; overflow: hidden;
+      display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr);
+      gap: clamp(4px, 0.8vw, 10px); padding: clamp(4px, 1vw, 14px);
+    }
+
+    .cell { background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #eee; }
+    .cell img { width: 100%; height: 100%; object-fit: contain; }
+
+    .howto {
+      margin-top: 18px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px;
+    }
+    .howto h2 { font-size: 16px; margin: 0 0 8px; }
+    .howto ol, .howto ul { margin: 8px 0 0 18px; }
+    .howto li { margin: 6px 0; }
+
+    /* 印刷スタイル */
+    @page { size: 257mm 364mm; margin: 0; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      header, .howto, .preview-note { display: none !important; }
+      .container { margin: 0; padding: 0; }
+      .preview-wrap { box-shadow: none; border: none; padding: 0; }
+      /* 実寸B4の印刷面 */
+      .sheet {
+        width: var(--b4-w); height: var(--b4-h);
+        margin: 0; border: none; background: #fff; gap: var(--gap); padding: var(--gap);
+      }
+      .cell { border: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>2 面トランプ作成サイト</h1>
+    <button class="btn primary" id="printBtn">印刷する（B4/カラー/2×2）</button>
+    <a class="btn" href="image1.png" download>image1.png をダウンロード</a>
+    <a class="btn" href="image2.png" download>image2.png をダウンロード</a>
+    <button class="btn" id="downloadBoth">両方ダウンロード（2回に分けて）</button>
+  </header>
+
+  <div class="container">
+    <div class="preview-wrap">
+      <p class="preview-note">プレビュー（縮小表示）。印刷時はB4実寸で <strong>2×2レイアウト</strong> になります。</p>
+      <!-- 2×2 配置：image1, image2 を繰り返し -->
+      <section class="sheet" aria-label="B4 2×2 プレビュー">
+        <div class="cell"><img src="image1.png" alt="image1" /></div>
+        <div class="cell"><img src="image2.png" alt="image2" /></div>
+        <div class="cell"><img src="image1.png" alt="image1" /></div>
+        <div class="cell"><img src="image2.png" alt="image2" /></div>
+      </section>
+    </div>
+
+    <section class="howto" id="howto">
+      <h2>使い方</h2>
+      <ol>
+        <li><strong>このHTMLファイル</strong>と<strong>image1.png / image2.png</strong>を同じフォルダに置きます（同梱）。</li>
+        <li><strong>PCで印刷する場合</strong>は、上の「印刷する」ボタンをクリック → ブラウザの印刷ダイアログで以下を確認してください：
+          <ul>
+            <li>用紙サイズ：<strong>B4（257×364mm）</strong></li>
+            <li>向き：<strong>縦</strong></li>
+            <li>余白：<strong>なし（または最小）</strong></li>
+            <li>拡大縮小：<strong>100%（実寸）</strong>（自動調整が入る場合は「用紙に合わせる」をオフ）</li>
+            <li>カラー設定：<strong>カラー</strong></li>
+          </ul>
+        </li>
+        <li><strong>スマホで印刷したい場合</strong>は、上のダウンロードボタンで<strong>image1.png / image2.png</strong>を端末に保存し、コンビニのマルチコピー機アプリ等から画像印刷を選んでB4で出力してください。</li>
+      </ol>
+      <p style="margin-top:10px; color:#6b7280; font-size:12px;">※ 見開きフチなしでの印刷は、プリンタ/ドライバの仕様に依存します。必要に応じて画像側に余白を付けるか、余白最小で印刷してください。</p>
+    </section>
+  </div>
+
+  <script>
+    // 印刷
+    document.getElementById('printBtn').addEventListener('click', () => {
+      window.print();
+    });
+
+    // 両方ダウンロード（2回連続でダウンロードをトリガー）
+    document.getElementById('downloadBoth').addEventListener('click', () => {
+      const files = ['image1.png', 'image2.png'];
+      files.forEach((name, idx) => {
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = name;
+          a.download = name;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, idx * 300);
+      });
+    });
+  </script>
+</body>
+</html>
