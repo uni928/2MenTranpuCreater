@@ -3,12 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>2 面トランプ作成サイト</title>
+  <title>B4 大判印刷（1画像=1枚×2ページ）</title>
   <style>
     :root {
       --b4-w: 257mm; /* B4 幅 */
       --b4-h: 364mm; /* B4 高さ */
-      --gap: 8mm;    /* 画像の間隔（印刷用）*/
     }
 
     html, body { height: 100%; }
@@ -46,18 +45,15 @@
     }
     .preview-note { color: #6b7280; font-size: 12px; margin: 0 0 10px; }
 
-    /* 画面プレビュー用：B4を縮小表示（等比） */
-    .sheet {
+    /* 画面プレビュー用：B4を縮小表示（等比）で2ページ縦並び */
+    .page {
       width: min(90vw, 900px);
       aspect-ratio: calc(257/364);
       border: 1px dashed #d1d5db;
-      margin: 0 auto; background: #fafafa; position: relative; overflow: hidden;
-      display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr);
-      gap: clamp(4px, 0.8vw, 10px); padding: clamp(4px, 1vw, 14px);
+      margin: 0 auto 16px; background: #fafafa; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; padding: clamp(4px, 1vw, 14px);
     }
-
-    .cell { background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #eee; }
-    .cell img { width: 100%; height: 100%; object-fit: contain; }
+    .page img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
 
     .howto {
       margin-top: 18px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px;
@@ -71,55 +67,54 @@
     @media print {
       body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       header, .howto, .preview-note { display: none !important; }
-      .container { margin: 0; padding: 0; }
-      .preview-wrap { box-shadow: none; border: none; padding: 0; }
-      /* 実寸B4の印刷面 */
-      .sheet {
+      .container, .preview-wrap { margin: 0; padding: 0; box-shadow: none; border: none; }
+      .page {
         width: var(--b4-w); height: var(--b4-h);
-        margin: 0; border: none; background: #fff; gap: var(--gap); padding: var(--gap);
+        margin: 0; border: none; background: #fff; padding: 0;
+        page-break-after: always; /* 各画像を1ページずつ */
       }
-      .cell { border: none; }
+      .page:last-child { page-break-after: auto; }
+      .page img { width: 100%; height: 100%; object-fit: contain; }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>2 面トランプ作成サイト</h1>
-    <button class="btn primary" id="printBtn">印刷する（B4/カラー/2×2）</button>
+    <h1>B4 大判印刷（1画像=1枚×2ページ）</h1>
+    <button class="btn primary" id="printBtn">印刷する（B4/カラー/各画像を1枚ずつ）</button>
     <a class="btn" href="image1.png" download>image1.png をダウンロード</a>
     <a class="btn" href="image2.png" download>image2.png をダウンロード</a>
     <button class="btn" id="downloadBoth">両方ダウンロード（2回に分けて）</button>
-    <a href="https://sp-sephiroth.jp/23040601/new_tranp">作り方</a>
+    <a class="btn" href="https://sp-sephiroth.jp/23040601/new_tranp" target="_blank" rel="noopener">作り方</a>
   </header>
 
   <div class="container">
     <div class="preview-wrap">
-      <p class="preview-note">プレビュー（縮小表示）。印刷時はB4実寸で <strong>2×2レイアウト</strong> になります。</p>
-      <!-- 2×2 配置：image1, image2 を繰り返し -->
-      <section class="sheet" aria-label="B4 2×2 プレビュー">
-        <div class="cell"><img src="image1.png" alt="image1" /></div>
-        <div class="cell"><img src="image2.png" alt="image2" /></div>
-        <div class="cell"><img src="image1.png" alt="image1" /></div>
-        <div class="cell"><img src="image2.png" alt="image2" /></div>
+      <p class="preview-note">プレビュー（縮小）。<strong>1画像=1ページ</strong>で、印刷時はB4実寸の<strong>2ページ</strong>になります。</p>
+      <!-- 1画像=1ページ：image1, image2 をそれぞれ1ページ全体に配置（トリミング無し） -->
+      <section aria-label="B4 プレビュー">
+        <div class="page"><img src="image1.png" alt="image1" /></div>
+        <div class="page"><img src="image2.png" alt="image2" /></div>
       </section>
     </div>
 
     <section class="howto" id="howto">
       <h2>使い方</h2>
       <ol>
-        <li><strong>PCで印刷する場合</strong>は、上の「印刷する」ボタンをクリック → ブラウザの印刷ダイアログで以下を確認してください：
+        <li><strong>PCで印刷する</strong>：上の「印刷する」をクリック → 印刷ダイアログで以下を確認
           <ul>
             <li>用紙サイズ：<strong>B4（257×364mm）</strong></li>
             <li>向き：<strong>縦</strong></li>
             <li>余白：<strong>なし（または最小）</strong></li>
-            <li>拡大縮小：<strong>100%（実寸）</strong>（自動調整が入る場合は「用紙に合わせる」をオフ）</li>
+            <li>拡大縮小：<strong>100%（実寸）</strong>（自動調整/用紙に合わせるはオフ）</li>
             <li>カラー設定：<strong>カラー</strong></li>
+            <li>ページ数：<strong>2ページ</strong>（1ページ目=image1、2ページ目=image2）</li>
           </ul>
         </li>
-        <li><strong>スマホで印刷したい場合</strong>は、上のダウンロードボタンで<strong>image1.png / image2.png</strong>を端末に保存し、コンビニのマルチコピー機アプリ等から画像印刷を選んでB4で出力してください。</li>
-        <li>作り方は <a href="https://sp-sephiroth.jp/23040601/new_tranp">こちら</a> を参照して下さい。裏面が透明でないスリーブ 60 枚と、不要なトランプや遊戯王などの適当なカード 60 枚が必要です</li>
+        <li><strong>スマホで印刷（コンビニ）</strong>：上のダウンロードボタンで <strong>image1.png / image2.png</strong> を端末へ保存 → マルチコピー機アプリ等で画像プリントを選択し、<strong>B4/カラー</strong>で出力。</li>
+        <li>作り方は <a href="https://sp-sephiroth.jp/23040601/new_tranp" target="_blank" rel="noopener">こちら</a>。裏面が透明でないスリーブ60枚と、不要なカード60枚をご用意ください。</li>
       </ol>
-      <p style="margin-top:10px; color:#6b7280; font-size:12px;">※ 見開きフチなしでの印刷は、プリンタ/ドライバの仕様に依存します。必要に応じて画像側に余白を付けるか、余白最小で印刷してください。</p>
+      <p style="margin-top:10px; color:#6b7280; font-size:12px;">※ フチなし可否はプリンタ依存です。必要に応じて画像側に余白を追加するか、余白最小で印刷してください。</p>
     </section>
   </div>
 
@@ -145,9 +140,4 @@
     });
   </script>
 </body>
-
 </html>
-
-
-
-
