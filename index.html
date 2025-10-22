@@ -80,6 +80,8 @@
 </head>
 <body>
   <header>
+    <h1>B4 大判印刷（1画像=1枚×2ページ）</h1>
+    <button class="btn primary" id="printBtn">印刷する（B4/カラー/各画像を1枚ずつ）</button>
     <a class="btn" href="image1.png" download>image1.png をダウンロード</a>
     <a class="btn" href="image2.png" download>image2.png をダウンロード</a>
     <button class="btn" id="downloadBoth">両方ダウンロード（2回に分けて）</button>
@@ -99,7 +101,7 @@
     <section class="howto" id="howto">
       <h2>使い方</h2>
       <ol>
-        <li><strong>PCで印刷する</strong>：ダウンロードボタンでダウンロード → B4 カラー印刷で 2 種類 × 2 枚を印刷
+        <li><strong>PCで印刷する</strong>：上の「印刷する」をクリック → 印刷ダイアログで以下を確認
           <ul>
             <li>用紙サイズ：<strong>B4（257×364mm）</strong></li>
             <li>向き：<strong>縦</strong></li>
@@ -109,7 +111,7 @@
             <li>ページ数：<strong>2ページ</strong>（1ページ目=image1、2ページ目=image2）</li>
           </ul>
         </li>
-        <li><strong>スマホで印刷（コンビニ）</strong>：上のダウンロードボタンで <strong>image1.png / image2.png</strong> を端末へ保存 → マルチコピー機アプリ等で画像プリントを選択し、<strong>B4/カラー</strong>で 2 種類 × 2 枚を印刷。</li>
+        <li><strong>スマホで印刷（コンビニ）</strong>：上のダウンロードボタンで <strong>image1.png / image2.png</strong> を端末へ保存 → マルチコピー機アプリ等で画像プリントを選択し、<strong>B4/カラー</strong>で出力。</li>
         <li>作り方は <a href="https://sp-sephiroth.jp/23040601/new_tranp" target="_blank" rel="noopener">こちら</a>。裏面が透明でないスリーブ60枚と、不要なカード60枚をご用意ください。</li>
       </ol>
       <p style="margin-top:10px; color:#6b7280; font-size:12px;">※ フチなし可否はプリンタ依存です。必要に応じて画像側に余白を追加するか、余白最小で印刷してください。</p>
@@ -117,6 +119,11 @@
   </div>
 
   <script>
+    // 印刷
+    document.getElementById('printBtn').addEventListener('click', () => {
+      window.print();
+    });
+
     // 両方ダウンロード（2回連続でダウンロードをトリガー）
     document.getElementById('downloadBoth').addEventListener('click', () => {
       const files = ['image1.png', 'image2.png'];
@@ -134,4 +141,3 @@
   </script>
 </body>
 </html>
-
